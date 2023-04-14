@@ -10,14 +10,19 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { PrimaryButton, SecondaryButton } from "../../components/buttons";
 import { useTheme } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
-import ProfilePhoto from "./ProfilePhoto";
+import ProfilePhoto from "./UserPhoto";
+import CameraScreen from "../../components/camera/CameraScreen";
+import { LoadingContext } from "../../contexts/loading.context";
+import { uploadProfilePhoto } from "../../services/storage";
 // import CameraScreen from "./CameraScreen";
 
 const Account = ({ navigation }) => {
   const { currentUser } = useContext(UserContext);
+  const { setIsLoading } = useContext(LoadingContext);
   const [displayName, setDisplayName] = useState(currentUser.displayName);
   const [isEditting, setIsEditting] = useState(false);
-  //const [photoURL, setPhotoURL] = useState(currentUser.photoURL); 
+  const [showCamera, setShowCamera] = useState(false);
+  //const [photoURL, setPhotoURL] = useState(currentUser.photoURL);
 
   const [snackText, setSnackText] = useState("");
   const theme = useTheme();
@@ -29,14 +34,14 @@ const Account = ({ navigation }) => {
     margin-bottom: 5px;
   `;
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setIsEditting(false);
-      return () => {
-        setIsEditting(false);
-      };
-    }, [])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     setIsEditting(false);
+  //     return () => {
+  //       setIsEditting(false);
+  //     };
+  //   }, [])
+  // );
 
   useEffect(() => {
     console.log("photoURL: ", currentUser.photoURL);
@@ -48,33 +53,38 @@ const Account = ({ navigation }) => {
     };
     handleUpdateProfile(userDetails)
       .then((res) => {
+        console.log("profileURL: ", res)
         setSnackText(res);
         setIsEditting(false);
       })
       .catch((err) => setSnackText(err));
   };
 
+  const uploadMedia = (image) => {
+    setIsLoading(true);
+    uploadProfilePhoto(currentUser, image).then((res) => {
+      setIsLoading(false);
+      setShowCamera(false);
+      setIsEditting(false);
+    });
+  };
+
   const EditSettings = styled.View`
     align-items: flex-end;
   `;
 
-  const navToCamera = () => {
-    console.log("navigating to camera");
-    navigation.navigate("Camera");
+  const openCamera = () => {
+    setShowCamera(true);
   };
-  // Updating profile pic means take the picture, upload it to google storage
-  // then retrieve the URL, send the URL to the updateProfile
-  // I've started adding the expo camera component. need to figure out props and such
+
   return (
     <View>
-      <EditSettings>
-      <Button onPress={handleSignOut}>Log out</Button>
-        <SecondaryButton onPress={() => setIsEditting((a) => !a)}>
-          {isEditting ? "Cancel" : "Edit"}
-        </SecondaryButton>
-      </EditSettings>
+      <PrimaryButton onPress={handleSignOut}>Log out</PrimaryButton>
+      <Button onPress={() => setIsEditting((a) => !a)}>
+        {isEditting ? "Cancel" : "Edit"}
+      </Button>
       {isEditting ? (
-        <TouchableOpacity onPress={navToCamera}>
+        <TouchableOpacity onPress={openCamera}>
           <CameraButton size={128} icon="camera" />
         </TouchableOpacity>
       ) : (
@@ -97,6 +107,7 @@ const Account = ({ navigation }) => {
       <Snackbar visible={snackText} onDismiss={() => setSnackText("")}>
         {snackText}
       </Snackbar>
+      {showCamera && <CameraScreen uploadMedia={uploadMedia} />}
     </View>
   );
 };

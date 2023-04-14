@@ -3,7 +3,7 @@ import {
   Provider as PaperProvider,
   MD3LightTheme as DefaultTheme,
 } from "react-native-paper";
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider } from "styled-components/native";
 import { theme } from "./src/theme";
@@ -12,6 +12,7 @@ import { SafeArea } from "./src/components/utility/SafeArea";
 import { NavigationContainer } from "@react-navigation/native";
 import NavContainer from "./src/components/navigation/NavContainer";
 import { LoadingProvider } from "./src/contexts/loading.context";
+import { ProfileProvider } from "./src/contexts/profile.context";
 
 const paperTheme = {
   ...DefaultTheme,
@@ -22,19 +23,21 @@ const paperTheme = {
 const App = () => {
   return (
     <UserProvider>
-      <LoadingProvider>
-        <PaperProvider theme={paperTheme}>
-          <SafeAreaProvider>
-            <SafeArea>
-              <ThemeProvider theme={theme}>
-                <NavigationContainer>
-                  <NavContainer />
-                </NavigationContainer>
-              </ThemeProvider>
-            </SafeArea>
-          </SafeAreaProvider>
-        </PaperProvider>
-      </LoadingProvider>
+      <ProfileProvider>
+        <LoadingProvider>
+          <PaperProvider theme={paperTheme}>
+            <SafeAreaProvider>
+              <SafeArea>
+                <ThemeProvider theme={theme}>
+                  <NavigationContainer>
+                    <NavContainer />
+                  </NavigationContainer>
+                </ThemeProvider>
+              </SafeArea>
+            </SafeAreaProvider>
+          </PaperProvider>
+        </LoadingProvider>
+      </ProfileProvider>
     </UserProvider>
   );
 };

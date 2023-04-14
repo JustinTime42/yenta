@@ -42,7 +42,7 @@ const NavContainer = () => {
         <Tab.Screen name="Messages" component={Messages} />
         <Tab.Screen
           name="Account"
-          component={AccountNavigator}
+          component={Account}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

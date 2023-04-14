@@ -10,7 +10,7 @@ import { app } from "./firebase";
 const auth = getAuth(app);
 
 const handleSignup = (email, password) => {
-  createUserWithEmailAndPassword(auth, email, password)
+  return createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       return userCredential;
     })

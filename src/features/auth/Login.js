@@ -5,7 +5,8 @@ import { SafeArea } from "../../components/utility/SafeArea";
 import { PrimaryButton, SecondaryButton } from "../../components/buttons";
 import styled from "styled-components";
 import { View } from "react-native";
-
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../services/firestore";
 
 const ButtonView = styled(View)`
   margin-top: 5px;
@@ -31,11 +32,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [loginError, setLoginError] = useState("");
-  
 
-  const signUpUser = () => {
+  const signUpUser = async () => {
     if (password === password2) {
-      handleSignup(email, password);
+      const credential = await handleSignup(email, password);
+      console.log(credential.user);
+      await setDoc(doc(db, "users", credential.user.uid), {});
     } else {
       setLoginError("Passwords must match.");
     }
@@ -76,9 +78,7 @@ const Login = () => {
         )}
         {!isNewUser && (
           <ButtonView>
-            <PrimaryButton onPress={logInUser}>
-              Log In
-            </PrimaryButton>
+            <PrimaryButton onPress={logInUser}>Log In</PrimaryButton>
             <SecondaryButton onPress={() => setIsNewUser(true)}>
               Register
             </SecondaryButton>

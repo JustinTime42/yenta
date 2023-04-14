@@ -3,7 +3,7 @@ import { Avatar, ActivityIndicator } from "react-native-paper";
 import styled from "styled-components";
 import { LoadingContext } from "../../contexts/loading.context";
 
-const ProfilePhoto = ({ src }) => {
+const UserPhoto = ({ src }) => {
   const { setIsLoading, isLoading } = useContext(LoadingContext)
 
   const ImageFrame = styled.View`
@@ -35,4 +35,4 @@ const ProfilePhoto = ({ src }) => {
   );
 };
 
-export default ProfilePhoto;
+export default UserPhoto;

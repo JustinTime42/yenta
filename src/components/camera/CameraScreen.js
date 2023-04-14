@@ -6,12 +6,8 @@ import {
   StyleSheet,
   Platform,
 } from "react-native";
-import {
-  ActivityIndicator,
-  Button,
-  Snackbar,
-  TextInput,
-} from "react-native-paper";
+import { Portal } from "react-native-paper";
+import { cameraStyles } from "./cameraStyles";
 import { Camera, CameraType, CameraPictureOptions } from "expo-camera";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PrimaryButton } from "../buttons";
@@ -19,13 +15,13 @@ import { uploadProfilePhoto } from "../../services/storage";
 import { UserContext } from "../../contexts/user.context";
 import { LoadingContext } from "../../contexts/loading.context";
 
-const CameraScreen = ({ navigation, icon, uploadMedia }) => {
+const CameraScreen = ({ uploadMedia, hideCamera }) => {
   const { currentUser } = useContext(UserContext);
   const [cameraType, setCameraType] = useState(CameraType.front);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [image, setImage] = useState(null);
-  const { setIsLoading } = useContext(LoadingContext);
+  
   const cameraRef = useRef();
 
   const toggleCameraType = () => {
@@ -58,7 +54,7 @@ const CameraScreen = ({ navigation, icon, uploadMedia }) => {
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
-      <View style={styles.container}>
+      <View style={cameraStyles.container}>
         <Text style={{ textAlign: "center" }}>
           We need your permission to show the camera
         </Text>
@@ -70,46 +66,37 @@ const CameraScreen = ({ navigation, icon, uploadMedia }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Camera ref={cameraRef} style={styles.camera} type={cameraType}>
-        <TouchableOpacity style={styles.flipButton} onPress={toggleCameraType}>
+    <Portal style={cameraStyles.container}>
+      <Camera ref={cameraRef} style={cameraStyles.camera} type={cameraType}>
+        <TouchableOpacity
+          onPress={hideCamera}
+        >
+          <Ionicons name={"close-circle-outline"} size={64} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={cameraStyles.flipButton}
+          onPress={toggleCameraType}
+        >
           <Ionicons name={"camera-reverse-outline"} size={64} />
         </TouchableOpacity>
         {image ? (
-          <TouchableOpacity style={styles.cameraButton} onPress={uploadMedia}>
+          <TouchableOpacity
+            style={cameraStyles.cameraButton}
+            onPress={() => uploadMedia(image)}
+          >
             <Ionicons name={"cloud-upload"} size={64} />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.cameraButton} onPress={takePicture}>
-            <Ionicons name={icon} size={64} />
+          <TouchableOpacity
+            style={cameraStyles.cameraButton}
+            onPress={takePicture}
+          >
+            <Ionicons name={"camera-outline"} size={64} />
           </TouchableOpacity>
         )}
       </Camera>
-    </View>
+    </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    display: "flex",
-    alignItems: "center",
-  },
-  camera: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: "100%",
-  },
-  flipButton: {
-    position: "absolute",
-    right: 5,
-    bottom: 5,
-  },
-  cameraButton: {
-    marginRight: "auto",
-    marginLeft: "auto",
-  },
-});
 
 export default CameraScreen;

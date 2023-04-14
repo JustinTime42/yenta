@@ -16,7 +16,7 @@ const ProfilePicture = ({ navigation }) => {
     setImage(img);
     const url = await uploadMedia(img, `profiles/${currentProfile}/`);
     await updateDoc(doc(db, "profiles", currentProfile), {
-      videoUrl: arrayUnion(url),
+      photoUrl: url,
     });
   };
 

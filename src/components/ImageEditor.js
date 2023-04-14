@@ -1,7 +1,13 @@
 import React, { useState, useContext } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { collection, addDoc, updateDoc, arrayUnion, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  arrayUnion,
+  doc,
+} from "firebase/firestore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CameraScreen from "./camera/CameraScreen";
 import { Image } from "expo-image";
@@ -21,7 +27,8 @@ const ImageEditor = ({ uploadMedia }) => {
       allowsEditing: true,
       quality: 1,
     });
-    setImage(result);
+    console.log(result.assets[0].uri)
+    setImage(result.assets[0].uri);
   };
 
   return (
@@ -44,6 +51,7 @@ const ImageEditor = ({ uploadMedia }) => {
       </View>
       {showCamera && (
         <CameraScreen
+          mode="camera"
           uploadMedia={uploadMedia}
           hideCamera={() => setShowCamera(false)}
         />
@@ -60,6 +68,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
+    height: 200,
     backgroundColor: "#0553",
   },
   button: {

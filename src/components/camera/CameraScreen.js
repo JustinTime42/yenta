@@ -21,7 +21,7 @@ const CameraScreen = ({ uploadMedia, hideCamera }) => {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [image, setImage] = useState(null);
-  
+
   const cameraRef = useRef();
 
   const toggleCameraType = () => {
@@ -46,7 +46,7 @@ const CameraScreen = ({ uploadMedia, hideCamera }) => {
       console.log(Object.keys(data));
       if (data) {
         await cameraRef.current.pausePreview();
-        setImage(data);
+        setImage(data.uri);
       }
     }
   };
@@ -68,9 +68,7 @@ const CameraScreen = ({ uploadMedia, hideCamera }) => {
   return (
     <Portal style={cameraStyles.container}>
       <Camera ref={cameraRef} style={cameraStyles.camera} type={cameraType}>
-        <TouchableOpacity
-          onPress={hideCamera}
-        >
+        <TouchableOpacity onPress={hideCamera}>
           <Ionicons name={"close-circle-outline"} size={64} />
         </TouchableOpacity>
         <TouchableOpacity

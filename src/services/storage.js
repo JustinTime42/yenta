@@ -30,9 +30,10 @@ const uploadProfilePhoto = async (user, image) => {
     });
 };
 
-const uploadMedia = async (media, path) => {
+const uploadMedia = async (mediaUrl, path) => {
+  console.log("URL: ", mediaUrl)
   const uri =
-    Platform.OS === "ios" ? media.uri.replace("file://", "") : media.uri;
+    Platform.OS === "ios" ? mediaUrl.replace("file://", "") : mediaUrl;
   const response = await fetch(uri);
   const blobFile = await response.blob();
   const filename = uri.substring(uri.lastIndexOf("/") + 1);

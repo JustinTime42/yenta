@@ -27,7 +27,6 @@ const ImageEditor = ({ uploadMedia }) => {
       allowsEditing: true,
       quality: 1,
     });
-    console.log(result.assets[0].uri)
     setImage(result.assets[0].uri);
   };
 

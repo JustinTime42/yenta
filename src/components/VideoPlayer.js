@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet, Button, ScrollView } from "react-native";
 import { Video, ResizeMode } from "expo-av";
 
 const VideoPlayer = ({ src }) => {
@@ -18,7 +18,7 @@ const VideoPlayer = ({ src }) => {
         isLooping
         onPlaybackStatusUpdate={(status) => setStatus(() => status)}
       />
-      <View style={styles.buttons}>
+      {/* <View style={styles.buttons}>
         <Button
           title={status.isPlaying ? "Pause" : "Play"}
           onPress={() =>
@@ -27,18 +27,22 @@ const VideoPlayer = ({ src }) => {
               : video.current.playAsync()
           }
         />
-      </View>
+      </View> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  video: {
+  container: {
+    display: "flex",
+    flexDirection: "column",
     width: "100%",
-    height: 200,
-  }
-
-
+    height: 300,
+  },
+  video: {    
+    width: "100%",
+    aspectRatio: 1,
+  },
 });
 
 export default VideoPlayer;

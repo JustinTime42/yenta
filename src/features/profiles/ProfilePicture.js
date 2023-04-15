@@ -1,12 +1,9 @@
 import React, { useContext, useState } from "react";
-import { View } from "react-native";
-import { TextInput } from "react-native-paper";
-import { collection, addDoc, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from "../../services/firestore";
-import { PrimaryButton } from "../../components/buttons";
 import { ProfileContext } from "../../contexts/profile.context";
 import { uploadMedia } from "../../services/storage";
 import ImageEditor from "../../components/ImageEditor";
+import { doc, updateDoc } from "firebase/firestore";
 
 const ProfilePicture = ({ navigation }) => {
   const [image, setImage] = useState(null);
@@ -18,6 +15,7 @@ const ProfilePicture = ({ navigation }) => {
     await updateDoc(doc(db, "profiles", currentProfile), {
       photoUrl: url,
     });
+    navigation.navigate("ProfileVideo");
   };
 
   return <ImageEditor uploadMedia={onSave} />;

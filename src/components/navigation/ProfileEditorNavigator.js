@@ -4,6 +4,7 @@ import Account from "../../features/account/Account";
 import CameraScreen from "../camera/CameraScreen";
 import FirstName from "../../features/profiles/FirstName";
 import ProfilePicture from "../../features/profiles/ProfilePicture"
+import ProfileVideo from "../../features/profiles/ProfileVideo";
 const Stack = createStackNavigator();
 
 const NewProfileNavigator = () => {
@@ -15,6 +16,7 @@ const NewProfileNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="ProfilePicture" component={ProfilePicture} />
+      <Stack.Screen name="ProfileVideo" component={ProfileVideo} />
     </Stack.Navigator>
   );
 };

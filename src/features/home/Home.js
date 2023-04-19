@@ -13,10 +13,17 @@ import ProfileEditorNavigator from "../../components/navigation/ProfileEditorNav
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../services/firestore";
 import ProfileCard from "./ProfileCard";
+import {
+  createNewProfile,
+  onSaveNewProfile,
+  updateProfile,
+} from "../profiles/utils";
+import { ProfileContext } from "../../contexts/profile.context";
 
 const Home = ({ navigation }) => {
   const { currentUser } = useContext(UserContext);
   const { setIsLoading } = useContext(LoadingContext);
+  const { setCurrentProfile, currentProfile } = useContext(ProfileContext);
   const [showEditor, setShowEditor] = useState(false);
   const [profiles, setProfiles] = useState([]);
 
@@ -29,27 +36,52 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     if (currentUser) {
-      console.log(currentUser);
-      const unsub = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
-        console.log(doc.data().profiles);
-        setProfiles(doc.data().profiles);
+      const unsub = onSnapshot(doc(db, "users", currentUser.uid), (res) => {
+        setProfiles(res.data().profiles);
       });
       return unsub;
     }
   }, [currentUser]);
 
+  const showProfileEditor = async (profileId = null) => {
+    let profile;
+    console.log("profileID: ", profileId);
+    if (!profileId) {
+      console.log("no profile");
+      profile = await createNewProfile(currentUser.uid);
+      console.log("profile ", profile);
+      setCurrentProfile(profile);
+      setShowEditor(true);
+    } else {
+      console.log("profile ", profile);
+      profile = profileId;
+    }
+    setCurrentProfile(profile);
+    setShowEditor(true);
+  };
+
+  const onSave = async (details, next) => {
+    const profileDocId = await updateProfile(details);
+    setCurrentProfile(profileDocId);
+    navigation.navigate(next);
+  };
+
   return (
     <>
       {showEditor ? (
-        <ProfileEditorNavigator />
+        <ProfileEditor onSave={onSave} />
       ) : (
         <ScrollView style={{ height: "80%" }}>
           <Text>Hello {currentUser.displayName} </Text>
-          <PrimaryButton onPress={() => setShowEditor(true)}>
-            Add Friend
-          </PrimaryButton>
+          <PrimaryButton onPress={() => showProfileEditor()}>Add Friend</PrimaryButton>
           {profiles?.map((profile, i) => {
-            return <ProfileCard profile={profile} key={i} />;
+            return (
+              <ProfileCard
+                profile={profile}
+                key={i}
+                showProfileEditor={showProfileEditor}
+              />
+            );
           })}
         </ScrollView>
       )}

@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Portal } from "react-native-paper";
 import { db } from "../../services/firestore";
 import VideoPlayer from "../../components/VideoPlayer";
-import { ScrollView } from "react-native";
+import { Image, ScrollView } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import { SafeArea } from "../../components/utility/SafeArea";
+import MatchCard from "./MatchCard";
 
 const Feed = ({ onClose }) => {
   const [profiles, setProfiles] = useState([]);
@@ -27,7 +28,7 @@ const Feed = ({ onClose }) => {
         <ScrollView>
           {profiles.map((profile, i) => {
             if (i < 5) {
-              return <VideoPlayer key={i} src={profile.videoUrl} />;
+              return <MatchCard key={i} profile={profile} />;
             } else {
               return null;
             }

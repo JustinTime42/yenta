@@ -8,10 +8,9 @@ import {
 } from "firebase/firestore";
 import { db } from "../../services/firestore";
 
-export const onSaveNewProfile = async (details, userId) => {
-  console.log(details);
-  console.log(userId);
-  const profileDocRef = await addDoc(collection(db, "profiles"), details);
+export const createNewProfile = async (userId) => {
+  const profileDocRef = await addDoc(collection(db, "profiles"), {name: ""});
+  console.log("profileDocRef: ", profileDocRef)
   await setDoc(
     doc(db, "users", userId),
     {
@@ -20,4 +19,11 @@ export const onSaveNewProfile = async (details, userId) => {
     { merge: true }
   );
   return profileDocRef.id;
+};
+
+export const updateProfile = async (details) => {
+  const { id, ...newDetails } = details;
+  const profileRef = doc(db, "profiles", id);
+  await updateDoc(profileRef, { ...newDetails });
+  return id;
 };

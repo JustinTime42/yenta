@@ -7,7 +7,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import Feed from "../feed/Feed";
 
-const ProfileCard = ({ profile }) => {
+const ProfileCard = ({ profile, showProfileEditor }) => {
   const [details, setDetails] = useState(null);
   const [showFeed, setShowFeed] = useState(false);
 
@@ -24,7 +24,9 @@ const ProfileCard = ({ profile }) => {
     <View>
       <Text style={styles.text}>{details?.firstName}</Text>
       <TouchableOpacity style={styles.editButton}>
-        <PrimaryButton>Edit</PrimaryButton>
+        <PrimaryButton onPress={() => showProfileEditor(profile)}>
+          Edit
+        </PrimaryButton>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setShowFeed(true)}>
         <Image
@@ -51,6 +53,6 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     backgroundColor: "#0553",
-    height: 200,
+    height: 400,
   },
 });

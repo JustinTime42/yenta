@@ -7,7 +7,7 @@ import ProfilePicture from "../../features/profiles/ProfilePicture"
 import ProfileVideo from "../../features/profiles/ProfileVideo";
 const Stack = createStackNavigator();
 
-const NewProfileNavigator = () => {
+const ProfileEditorNavigator = (profile, onSave) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -21,4 +21,4 @@ const NewProfileNavigator = () => {
   );
 };
 
-export default NewProfileNavigator;
+export default ProfileEditorNavigator;

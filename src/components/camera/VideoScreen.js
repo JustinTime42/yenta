@@ -15,7 +15,7 @@ import { uploadMedia } from "../../services/storage";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../services/firestore";
 
-const VideoScreen = ({ navigation, onSave, setIsCameraOpen }) => {
+const VideoScreen = ({ navigation, onSave, setIsVideoCameraOpen }) => {
   const [videoPermission, requestVideoPermission] =
     Camera.useCameraPermissions();
   const [audioPermission, requestAudioPermission] =
@@ -32,8 +32,8 @@ const VideoScreen = ({ navigation, onSave, setIsCameraOpen }) => {
   };
 
   const onUpload = () => {
-    onSave(videoSource);
-    setIsCameraOpen(false)
+    onSave(videoSource, "videoUrl");
+    setIsVideoCameraOpen(false)
     // const url = await uploadMedia(videoSource, `profiles/${currentProfile}/`);
     // await updateDoc(doc(db, "profiles", currentProfile), {
     //   videoUrl: url,

@@ -14,17 +14,14 @@ import { ProfileContext } from "../../contexts/profile.context";
 import { UserContext } from "../../contexts/user.context";
 import { onSaveNewProfile } from "./utils";
 
-const FirstName = ({ navigation }) => {
-  const { setCurrentProfile } = useContext(ProfileContext);
+const FirstName = ({ navigation, profile, onSave }) => {
+  const { setCurrentProfile, currentProfile } = useContext(ProfileContext);
   const { currentUser } = useContext(UserContext);
   const [name, setName] = useState("");
 
-  const onSave = async () => {
-    const details = { firstName: name };
-    const profileDocId = await onSaveNewProfile(details, currentUser.uid);
-    setCurrentProfile(profileDocId);
-    navigation.navigate("ProfilePicture");
-  };
+
+
+
 
   return (
     <View>

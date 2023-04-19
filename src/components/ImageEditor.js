@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import {
@@ -17,9 +17,13 @@ import { PrimaryButton } from "./buttons";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const ImageEditor = ({ uploadMedia }) => {
+const ImageEditor = ({ uploadMedia, img }) => {
   const [showCamera, setShowCamera] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(img);
+
+  useEffect(() => {
+    console.log(img)
+  },[img])
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -27,7 +31,8 @@ const ImageEditor = ({ uploadMedia }) => {
       allowsEditing: true,
       quality: 1,
     });
-    setImage(result.assets[0].uri);
+    uploadMedia(result.assets[0].uri, "photoUrl")
+    //setImage(result.assets[0].uri);
   };
 
   return (
@@ -41,12 +46,10 @@ const ImageEditor = ({ uploadMedia }) => {
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
-          source={image}
-          placeholder={blurhash}
+          source={img}
           contentFit="cover"
           transition={1000}
         />
-        <PrimaryButton onPress={() => uploadMedia(image)}>Save</PrimaryButton>
       </View>
       {showCamera && (
         <CameraScreen
@@ -67,8 +70,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 200,
     backgroundColor: "#0553",
+    height: 300,
   },
   button: {
     position: "absolute",

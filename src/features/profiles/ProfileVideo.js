@@ -17,9 +17,9 @@ import CameraScreen from "../../components/camera/CameraScreen";
 import VideoScreen from "../../components/camera/VideoScreen";
 import { cameraStyles } from "../../components/camera/cameraStyles";
 
-const ProfileVideo = ({ navigation }) => {
+const ProfileVideo = ({ navigation, uploadMedia }) => {
   const [video, setVideo] = useState(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isVideoCameraOpen, setIsVideoCameraOpen] = useState(false);
   const { currentProfile } = useContext(ProfileContext);
 
   const onSave = async (img) => {
@@ -31,7 +31,7 @@ const ProfileVideo = ({ navigation }) => {
   };
 
   const onStartCamera = () => {
-    setIsCameraOpen(true);
+    setIsVideoCameraOpen(true);
   };
 
   return (
@@ -39,9 +39,9 @@ const ProfileVideo = ({ navigation }) => {
       <TouchableOpacity onPress={onStartCamera}>
         <Avatar.Icon size={64} color={"red"} />
       </TouchableOpacity>
-      {isCameraOpen && (
+      {isVideoCameraOpen && (
         <Portal style={cameraStyles.container}>
-          <VideoScreen onSave={onSave} setIsCameraOpen={setIsCameraOpen} />
+          <VideoScreen onSave={onSave} setIsVideoCameraOpen={setIsVideoCameraOpen} />
         </Portal>
       )}
     </View>

@@ -80,7 +80,7 @@ const CameraScreen = ({ uploadMedia, hideCamera }) => {
         {image ? (
           <TouchableOpacity
             style={cameraStyles.cameraButton}
-            onPress={() => uploadMedia(image)}
+            onPress={() => uploadMedia(image, "photoUrl")}
           >
             <Ionicons name={"cloud-upload"} size={64} />
           </TouchableOpacity>

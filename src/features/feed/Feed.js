@@ -1,4 +1,4 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, limit, onSnapshot, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Portal } from "react-native-paper";
 import { db } from "../../services/firestore";
@@ -11,7 +11,7 @@ import MatchCard from "./MatchCard";
 const Feed = ({ onClose }) => {
   const [profiles, setProfiles] = useState([]);
   useEffect(() => {
-    const q = query(collection(db, "profiles"));
+    const q = query(collection(db, "profiles"), limit(10));
     const unsub = onSnapshot(q, (querySnapshot) => {
       const profilesArray = [];
       querySnapshot.forEach((doc) => {
@@ -27,11 +27,7 @@ const Feed = ({ onClose }) => {
         <PrimaryButton onPress={onClose}>exit</PrimaryButton>
         <ScrollView>
           {profiles.map((profile, i) => {
-            if (i < 5) {
-              return <MatchCard key={i} profile={profile} />;
-            } else {
-              return null;
-            }
+            return <MatchCard key={i} profile={profile} />;
           })}
         </ScrollView>
       </SafeArea>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Text, TouchableOpacity } from "react-native-paper";
+import { Avatar, Text } from "react-native-paper";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import {
   onSnapshot,
   query,
@@ -8,8 +9,9 @@ import {
   limit,
 } from "firebase/firestore";
 import { db } from "../../services/firestore";
+import { View } from "react-native";
 
-const ChatCard = ({ chatDoc }) => {
+const ChatCard = ({ chatDoc, openChat }) => {
   const [lastMsg, setLastMsg] = useState("");
 
   useEffect(() => {
@@ -24,11 +26,25 @@ const ChatCard = ({ chatDoc }) => {
   });
 
   return (
-    <TouchableOpacity>
-      <Avatar.Image source={{ uri: chatDoc[lastMsg.from].photoUrl }} />
-      <Text>{lastMsg.body}</Text>
+    <TouchableOpacity
+      style={styles.touchable}
+      onPress={() => openChat(chatDoc)}
+    >
+      {lastMsg && (
+        <>
+          <Avatar.Image source={{ uri: chatDoc[lastMsg.from].photoUrl }} />
+          <Text>{lastMsg.body}</Text>
+        </>
+      )}
     </TouchableOpacity>
   );
 };
 
 export default ChatCard;
+
+const styles = StyleSheet.create({
+  touchable: {
+    display: "flex",
+    flexDirection: "row",
+  },
+});

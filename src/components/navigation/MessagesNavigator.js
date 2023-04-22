@@ -1,23 +1,24 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { pubnub } from "../../services/message";
-import { PubNubProvider } from "pubnub-react";
+import ChatList from "../../features/messages/ChatList";
+import Chat from "../../features/messages/Chat";
 
 const Stack = createStackNavigator();
 
-const MessagesNavigator = (profile, onSave) => {
+const MessagesNavigator = () => {
   return (
-    <PubNubProvider client={pubnub}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="FirstName"
-          component={FirstName}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Messages" component={Channels} />
-        <Stack.Screen name="ProfileVideo" component={ProfileVideo} />
-      </Stack.Navigator>
-    </PubNubProvider>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Chat List"
+        component={ChatList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 };
 

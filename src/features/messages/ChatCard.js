@@ -32,7 +32,7 @@ const ChatCard = ({ chatDoc, openChat }) => {
     >
       {lastMsg && (
         <>
-          <Avatar.Image source={{ uri: chatDoc[lastMsg.from].photoUrl }} />
+          <Avatar.Image source={{ uri: chatDoc[lastMsg.from].photoURL }} />
           <Text>{lastMsg.body}</Text>
         </>
       )}

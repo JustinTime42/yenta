@@ -5,6 +5,7 @@ import { db } from "../../services/firestore";
 import { UserContext } from "../../contexts/user.context";
 import ChatCard from "./ChatCard";
 import { Text } from "react-native-paper";
+import { openChat } from "./utils";
 
 const ChatList = ({ navigation }) => {
   const { currentUser } = useContext(UserContext);
@@ -25,22 +26,28 @@ const ChatList = ({ navigation }) => {
           path: res.ref.path,
         });
       });
-      console.log(chatsArray)
+      console.log(chatsArray);
       setChats(chatsArray);
     });
     return unsub;
   }, [currentUser.uid]);
 
-  const openChat = (chatDoc) => {
-    navigation.navigate("Chat", { chatDoc: chatDoc });
-  };
+  // const openChat = (navigation, chatDoc) => {
+  //   navigation.navigate("Chat", { chatDoc: chatDoc });
+  // };
 
   return (
     <View>
       <Text>Messages</Text>
       {chats.length > 0 &&
         chats.map((chat, i) => {
-          return <ChatCard openChat={openChat} chatDoc={chat} key={i} />;
+          return (
+            <ChatCard
+              openChat={() => openChat(navigation, chat)}
+              chatDoc={chat}
+              key={i}
+            />
+          );
         })}
     </View>
   );

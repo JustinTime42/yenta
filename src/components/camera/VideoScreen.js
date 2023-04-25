@@ -15,7 +15,7 @@ import { uploadMedia } from "../../services/storage";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../services/firestore";
 
-const VideoScreen = ({ navigation, onSave, setIsVideoCameraOpen }) => {
+const VideoScreen = ({ navigation, onSave, onClose, setIsVideoCameraOpen }) => {
   const [videoPermission, requestVideoPermission] =
     Camera.useCameraPermissions();
   const [audioPermission, requestAudioPermission] =
@@ -114,6 +114,9 @@ const VideoScreen = ({ navigation, onSave, setIsVideoCameraOpen }) => {
   );
   const renderCaptureControl = () => (
     <View style={styles.control}>
+      <TouchableOpacity disabled={isVideoRecording} onPress={() => setIsVideoCameraOpen(false)}>
+        <Ionicons name={"close"} size={64} />
+      </TouchableOpacity>
       <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
         <Ionicons name={"camera-reverse-outline"} size={64} />
       </TouchableOpacity>

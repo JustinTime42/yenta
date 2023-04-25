@@ -6,12 +6,14 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { app } from "./firebase";
+import { updateUser } from "./firestore";
 
 const auth = getAuth(app);
 
 const handleSignup = (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
+      updateUser({ uid: userCredential.user.uid });
       return userCredential;
     })
     .catch((error) => {
@@ -44,7 +46,7 @@ const handleSignOut = () => {
 const handleUpdateProfile = (userDetails) => {
   return updateProfile(auth.currentUser, userDetails)
     .then((result) => {
-      console.log("update", auth.currentUser);
+      updateUser({ ...userDetails, uid: auth.currentUser.uid });
       return "Profile Updated";
     })
     .catch((error) => {

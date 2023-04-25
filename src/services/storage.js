@@ -10,8 +10,7 @@ const uploadProfilePhoto = async (user, image) => {
     contentType: "image/jpeg",
   };
 
-  const uri =
-    Platform.OS === "ios" ? image.uri.replace("file://", "") : image.uri;
+  const uri = Platform.OS === "ios" ? image.replace("file://", "") : image;
   const response = await fetch(uri);
   const blobFile = await response.blob();
 
@@ -20,7 +19,6 @@ const uploadProfilePhoto = async (user, image) => {
   uploadBytes(imageRef, blobFile, metadata)
     .then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        console.log("url:", url.split("?")[0]);
         handleUpdateProfile({ photoURL: url });
         return url;
       });
@@ -31,7 +29,6 @@ const uploadProfilePhoto = async (user, image) => {
 };
 
 const uploadMedia = async (mediaUrl, path) => {
-  console.log("URL: ", mediaUrl)
   const uri =
     Platform.OS === "ios" ? mediaUrl.replace("file://", "") : mediaUrl;
   const response = await fetch(uri);

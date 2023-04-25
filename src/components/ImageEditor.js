@@ -31,7 +31,7 @@ const ImageEditor = ({ uploadMedia, img }) => {
       allowsEditing: true,
       quality: 1,
     });
-    uploadMedia(result.assets[0].uri, "photoUrl")
+    uploadMedia(result.assets[0].uri, "photoURL")
     //setImage(result.assets[0].uri);
   };
 
@@ -55,7 +55,7 @@ const ImageEditor = ({ uploadMedia, img }) => {
         <CameraScreen
           mode="camera"
           uploadMedia={uploadMedia}
-          hideCamera={() => setShowCamera(false)}
+          onClose={() => setShowCamera(false)}
         />
       )}
     </View>

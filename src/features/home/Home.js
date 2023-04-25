@@ -48,7 +48,7 @@ const Home = ({ navigation }) => {
     console.log("profileID: ", profileId);
     if (!profileId) {
       console.log("no profile");
-      profile = await createNewProfile(currentUser.uid);
+      profile = await createNewProfile(currentUser);
       console.log("profile ", profile);
       setCurrentProfile(profile);
       setShowEditor(true);
@@ -77,6 +77,7 @@ const Home = ({ navigation }) => {
           {profiles?.map((profile, i) => {
             return (
               <ProfileCard
+                navigation={navigation}
                 profile={profile}
                 key={i}
                 showProfileEditor={showProfileEditor}

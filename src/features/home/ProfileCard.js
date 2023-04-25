@@ -7,7 +7,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import Feed from "../feed/Feed";
 
-const ProfileCard = ({ profile, showProfileEditor }) => {
+const ProfileCard = ({ navigation, profile, showProfileEditor }) => {
   const [details, setDetails] = useState(null);
   const [showFeed, setShowFeed] = useState(false);
 
@@ -31,12 +31,12 @@ const ProfileCard = ({ profile, showProfileEditor }) => {
       <TouchableOpacity onPress={() => setShowFeed(true)}>
         <Image
           style={styles.image}
-          source={details?.photoUrl}
+          source={details?.photoURL}
           contentFit="cover"
           transition={1000}
         />
       </TouchableOpacity>
-      {showFeed && <Feed onClose={() => setShowFeed(false)} />}
+      {showFeed && <Feed navigation={navigation} onClose={() => setShowFeed(false)} />}
     </View>
   );
 };

@@ -15,10 +15,11 @@ import { db } from "../../services/firestore";
 import { ScrollView, StyleSheet } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import { UserContext } from "../../contexts/user.context";
+import { createNewMessageThread } from "./utils";
 
-const Chat = ({ route }) => {
+const Chat = ({ navigation, route }) => {
   const { currentUser } = useContext(UserContext);
-  const [messages, setMessages] = useState("");
+  const [messages, setMessages] = useState([]);
   const { chatDoc } = route.params;
   const [text, setText] = useState("");
 
@@ -26,8 +27,8 @@ const Chat = ({ route }) => {
     if (!chatDoc) {
       return;
     }
-    console.log("Chat doc", chatDoc);
-    const chatRef = collection(db, `${chatDoc.path}/messages`);
+    let chatRef;
+    chatRef = collection(db, `${chatDoc.path}/messages`);
     const q = query(chatRef, orderBy("timestamp"), limit(10));
     const unsub = onSnapshot(q, (querySnapshot) => {
       let msgArray = [];
@@ -35,6 +36,7 @@ const Chat = ({ route }) => {
         msgArray.push({ ...doc.data(), id: doc.id });
       });
       setMessages(msgArray);
+      console.log(msgArray);
     });
     return unsub;
   }, [chatDoc]);
@@ -48,23 +50,20 @@ const Chat = ({ route }) => {
         timestamp: serverTimestamp(),
       }
     );
-    setText("")
+    setText("");
   };
 
   return (
     <View style={styles.chatWindow}>
       <ScrollView>
-        {messages &&
-          chatDoc &&
-          messages.map((msg, i) => {
-            console.log(msg);
-            return (
-              <TouchableOpacity key={i} styles={styles.msgContainer}>
-                <Avatar.Image source={{ uri: chatDoc[msg.from].photoUrl }} />
-                <Text>{msg.body}</Text>
-              </TouchableOpacity>
-            );
-          })}
+        {messages.map((msg, i) => {
+          return (
+            <TouchableOpacity key={i} styles={styles.msgContainer}>
+              <Avatar.Image source={{ uri: chatDoc[msg.from]?.photoURL }} />
+              <Text>{msg.body}</Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
       <View style={styles.messageBox}>
         <TextInput

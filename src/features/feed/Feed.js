@@ -8,7 +8,7 @@ import { PrimaryButton } from "../../components/buttons";
 import { SafeArea } from "../../components/utility/SafeArea";
 import MatchCard from "./MatchCard";
 
-const Feed = ({ onClose }) => {
+const Feed = ({ navigation, onClose }) => {
   const [profiles, setProfiles] = useState([]);
   useEffect(() => {
     const q = query(collection(db, "profiles"), limit(10));
@@ -27,7 +27,14 @@ const Feed = ({ onClose }) => {
         <PrimaryButton onPress={onClose}>exit</PrimaryButton>
         <ScrollView>
           {profiles.map((profile, i) => {
-            return <MatchCard key={i} profile={profile} />;
+            return (
+              <MatchCard
+                navigation={navigation}
+                key={i}
+                profile={profile}
+                onClose={onClose}
+              />
+            );
           })}
         </ScrollView>
       </SafeArea>

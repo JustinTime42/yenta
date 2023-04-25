@@ -60,7 +60,7 @@ const ProfileEditor = () => {
       <PrimaryButton onPress={onSave}>Save</PrimaryButton>
       <ImageEditor
         uploadMedia={handleSaveMedia}
-        img={profileDetails.photoUrl}
+        img={profileDetails.photoURL}
       />
       <TouchableOpacity onPress={() => setIsVideoCameraOpen(true)}>
         <Avatar.Icon size={64} color="red" />

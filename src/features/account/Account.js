@@ -53,7 +53,6 @@ const Account = ({ navigation }) => {
     };
     handleUpdateProfile(userDetails)
       .then((res) => {
-        console.log("profileURL: ", res)
         setSnackText(res);
         setIsEditting(false);
       })
@@ -107,7 +106,7 @@ const Account = ({ navigation }) => {
       <Snackbar visible={snackText} onDismiss={() => setSnackText("")}>
         {snackText}
       </Snackbar>
-      {showCamera && <CameraScreen uploadMedia={uploadMedia} />}
+      {showCamera && <CameraScreen uploadMedia={uploadMedia} onClose={() => setShowCamera(false)} />}
     </View>
   );
 };

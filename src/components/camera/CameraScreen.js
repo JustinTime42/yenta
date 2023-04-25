@@ -15,7 +15,7 @@ import { uploadProfilePhoto } from "../../services/storage";
 import { UserContext } from "../../contexts/user.context";
 import { LoadingContext } from "../../contexts/loading.context";
 
-const CameraScreen = ({ uploadMedia, hideCamera }) => {
+const CameraScreen = ({ uploadMedia, onClose }) => {
   const { currentUser } = useContext(UserContext);
   const [cameraType, setCameraType] = useState(CameraType.front);
   const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -68,7 +68,7 @@ const CameraScreen = ({ uploadMedia, hideCamera }) => {
   return (
     <Portal style={cameraStyles.container}>
       <Camera ref={cameraRef} style={cameraStyles.camera} type={cameraType}>
-        <TouchableOpacity onPress={hideCamera}>
+        <TouchableOpacity onPress={onClose}>
           <Ionicons name={"close-circle-outline"} size={64} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -80,7 +80,7 @@ const CameraScreen = ({ uploadMedia, hideCamera }) => {
         {image ? (
           <TouchableOpacity
             style={cameraStyles.cameraButton}
-            onPress={() => uploadMedia(image, "photoUrl")}
+            onPress={() => uploadMedia(image, "photoURL")}
           >
             <Ionicons name={"cloud-upload"} size={64} />
           </TouchableOpacity>

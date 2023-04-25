@@ -1,13 +1,32 @@
 import { ResizeMode, Video } from "expo-av";
 import { Image } from "expo-image";
-import React, {useRef} from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useContext, useRef } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-const MatchCard = ({ profile }) => {
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { UserContext } from "../../contexts/user.context";
+import { createNewMessageThread } from "../messages/utils";
+
+const MatchCard = ({ navigation, profile, onClose }) => {
+  const { currentUser } = useContext(UserContext);
   const videoRef = useRef(null);
+
+  const pressMessage = () => {
+    const chat = createNewMessageThread(currentUser, profile);
+    navigation.navigate("Messages", {
+      screen: "Chat",
+      params: { chatDoc: { ...chat, path: `messages/${chat.id}` } },
+    });
+    onClose();
+  };
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={pressMessage} style={styles.mailIcon}>
+        <Ionicons name="mail" color="blue" size={64} />
+      </TouchableOpacity>
       <Video
+        resizeMode="contain"
         ref={videoRef}
         style={styles.video}
         source={{
@@ -16,11 +35,7 @@ const MatchCard = ({ profile }) => {
         useNativeControls
         isLooping
       />
-      {/* <Image
-        style={{ height: 400, width: "100%" }}
-        source={{ uri: profile.photoUrl }}
-      /> */}
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -29,11 +44,17 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     overflow: "scroll",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   video: {
     flex: 1,
-    height: 600,
+    height: 500,
+  },
+  mailIcon: {
+    position: "absolute",
+    top: 15,
+    right: 55,
+    zIndex: 1,
   },
 });
 

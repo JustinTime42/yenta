@@ -16,9 +16,9 @@ export const createNewMessageThread = async (currentUser, profile) => {
       photoURL: profile.account.photoURL,
     },
   };
-  const docRef = await addDoc(collection(db, "messages"), threadData);
-  console.log("New Message Thread: ", docRef.id);
-  return { ...threadData, id: docRef.id };
+  return await addDoc(collection(db, "messages"), threadData);
+  // console.log("New Message Thread: ", docRef.path);
+  // return docRef;
 };
 
 export const openChat = (navigation, chatDoc) => {

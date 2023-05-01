@@ -11,11 +11,12 @@ const MatchCard = ({ navigation, profile, onClose }) => {
   const { currentUser } = useContext(UserContext);
   const videoRef = useRef(null);
 
-  const pressMessage = () => {
-    const chat = createNewMessageThread(currentUser, profile);
+  const pressMessage = async () => {
+    const chat = await createNewMessageThread(currentUser, profile);
+    console.log("chat ref: ", chat.path);
     navigation.navigate("Messages", {
       screen: "Chat",
-      params: { chatDoc: { ...chat, path: `messages/${chat.id}` } },
+      params: { chatDoc: { path: chat.path } },
     });
     onClose();
   };

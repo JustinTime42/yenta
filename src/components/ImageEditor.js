@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
+import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import {
   collection,
   addDoc,
@@ -37,12 +37,16 @@ const ImageEditor = ({ uploadMedia, img }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={pickImageAsync}>
-        <Ionicons name={"folder-outline"} size={64} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => setShowCamera(true)}>
-        <Ionicons name={"camera-outline"} size={64} />
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={pickImageAsync}>
+          <Ionicons name={"folder-outline"} size={64} />
+          <Text>Upload Photo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowCamera(true)}>
+          <Ionicons name={"camera-outline"} size={64} />
+          <Text>Take Photo</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
@@ -75,6 +79,10 @@ const styles = StyleSheet.create({
   },
   button: {
     position: "absolute",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around"
   },
   imageContainer: {
     backgroundColor: "#fff",

@@ -51,6 +51,11 @@ const CameraScreen = ({ uploadMedia, onClose }) => {
     }
   };
 
+  const uploadPicture = async () => {
+    uploadMedia(image, "photoURL");
+    onClose();
+  }
+
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
@@ -80,7 +85,7 @@ const CameraScreen = ({ uploadMedia, onClose }) => {
         {image ? (
           <TouchableOpacity
             style={cameraStyles.cameraButton}
-            onPress={() => uploadMedia(image, "photoURL")}
+            onPress={uploadPicture}
           >
             <Ionicons name={"cloud-upload"} size={64} />
           </TouchableOpacity>

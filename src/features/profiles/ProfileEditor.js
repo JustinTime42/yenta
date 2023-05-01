@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Avatar, Portal, TextInput } from "react-native-paper";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Avatar, Dialog, Portal, TextInput } from "react-native-paper";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../../services/firestore";
+import { db, deleteProfile } from "../../services/firestore";
 import ImageEditor from "../../components/ImageEditor";
-import { PrimaryButton } from "../../components/buttons";
+import { DangerButton, PrimaryButton } from "../../components/buttons";
 import { ProfileContext } from "../../contexts/profile.context";
 import { uploadMedia } from "../../services/storage";
 import { updateProfile } from "./utils";
@@ -18,6 +25,7 @@ const ProfileEditor = () => {
   const [name, setName] = useState(profileDetails.firstName || "");
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isVideoCameraOpen, setIsVideoCameraOpen] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const videoRef = React.useRef(null);
   // const [image, setImage] = useState(null);
   // const [video, setVideo] = useState(null);
@@ -38,6 +46,7 @@ const ProfileEditor = () => {
       `profiles/${currentProfile}/${field.split("U")[0]}`
     );
     updateProfile({ id: currentProfile, [field]: url });
+    setIsCameraOpen(false);
   };
 
   const onSave = (details, next) => {
@@ -49,21 +58,36 @@ const ProfileEditor = () => {
     setIsCameraOpen(true);
   };
 
+  const onDeletePress = () => {
+    deleteProfile(profileDetails);
+    setShowDelete(false);
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* change this. make a Text visible if not editing, TextInput if editting */}
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder={profileDetails.firstName || "First Name"}
-      />
-      <PrimaryButton onPress={onSave}>Save</PrimaryButton>
+      <View style={styles.nameContainer}>
+        <TextInput
+          style={styles.nameField}
+          value={name}
+          onChangeText={setName}
+          placeholder={profileDetails.firstName || "First Name"}
+        />
+        <PrimaryButton style={styles.saveButton} onPress={onSave}>
+          Save
+        </PrimaryButton>
+      </View>
+
       <ImageEditor
         uploadMedia={handleSaveMedia}
         img={profileDetails.photoURL}
       />
-      <TouchableOpacity onPress={() => setIsVideoCameraOpen(true)}>
-        <Avatar.Icon size={64} color="red" />
+      <TouchableOpacity
+        style={styles.videoButton}
+        onPress={() => setIsVideoCameraOpen(true)}
+      >
+        <Text style={styles.videoText}>Take Video</Text>
+        <Ionicons name="videocam" size={64} color="blue" />
       </TouchableOpacity>
       <Video
         ref={videoRef}
@@ -75,6 +99,26 @@ const ProfileEditor = () => {
         resizeMode={ResizeMode.CONTAIN}
         isLooping
       />
+      <DangerButton onPress={() => setShowDelete(true)}>
+        Delete This Profile
+      </DangerButton>
+      <Dialog visible={showDelete} onDismiss={() => setShowDelete(false)}>
+        <Dialog.Title>Delete Profile?</Dialog.Title>
+        <Dialog.Content>
+          <Text>
+            Are you sure you want to delete the profile for{" "}
+            {profileDetails.firstName}
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <PrimaryButton onPress={() => setShowDelete(false)}>
+            Cancel
+          </PrimaryButton>
+          <PrimaryButton onPress={onDeletePress}>
+            Delete This Profile
+          </PrimaryButton>
+        </Dialog.Actions>
+      </Dialog>
       {isVideoCameraOpen && (
         <Portal style={cameraStyles.container}>
           <VideoScreen
@@ -89,12 +133,31 @@ const ProfileEditor = () => {
 
 const styles = StyleSheet.create({
   container: {
-    height: "80%",
+    flex: 1,
     overflow: "scroll",
   },
   video: {
     height: 300,
     width: "100%",
+  },
+  nameContainer: {
+    flexDirection: "row",
+    alignContent: "center",
+  },
+  saveButton: {
+    flex: 1,
+  },
+  nameField: {
+    flex: 5,
+  },
+  videoButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  videoText: {
+    fontWeight: "bold",
+    color: "blue",
   },
 });
 

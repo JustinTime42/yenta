@@ -5,8 +5,7 @@ import { SafeArea } from "../../components/utility/SafeArea";
 import { PrimaryButton, SecondaryButton } from "../../components/buttons";
 import styled from "styled-components";
 import { View } from "react-native";
-import { doc, setDoc } from "firebase/firestore";
-import { db, updateUser } from "../../services/firestore";
+import { updateUser } from "../../services/firestore";
 
 const ButtonView = styled(View)`
   margin-top: 5px;
@@ -37,7 +36,7 @@ const Login = () => {
     if (password === password2) {
       const credential = await handleSignup(email, password);
       console.log(credential);
-      updateUser({ userDetails: { uid: credential.user.uid } });
+      updateUser({ uid: credential.user.uid });
       //await setDoc(doc(db, "users", credential.user.uid), {});
     } else {
       setLoginError("Passwords must match.");

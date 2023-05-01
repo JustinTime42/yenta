@@ -23,7 +23,7 @@ const ButtonView = styled(View)`
 export const PrimaryButton = (props) => {
   const theme = useTheme();
   return (
-    <ButtonView>
+    <ButtonView style={props.style}>
       <Button onPress={props.onPress} textColor={theme.colors.primary}>
         {props.children}
       </Button>
@@ -36,6 +36,17 @@ export const SecondaryButton = (props) => {
   return (
     <ButtonView>
       <Button onPress={props.onPress} textColor={theme.colors.secondary}>
+        {props.children}
+      </Button>
+    </ButtonView>
+  );
+};
+
+export const DangerButton = (props) => {
+  const theme = useTheme();
+  return (
+    <ButtonView>
+      <Button onPress={props.onPress} textColor={theme.colors.error}>
         {props.children}
       </Button>
     </ButtonView>

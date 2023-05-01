@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Button, Card, Portal } from "react-native-paper";
 import { UserContext } from "../../contexts/user.context";
 import VideoPlayer from "../../components/VideoPlayer";
@@ -26,6 +27,7 @@ const Home = ({ navigation }) => {
   const { setCurrentProfile, currentProfile } = useContext(ProfileContext);
   const [showEditor, setShowEditor] = useState(false);
   const [profiles, setProfiles] = useState([]);
+  const [intro, setIntro] = useState(true);
 
   useEffect(() => {
     const unsub = navigation.addListener("focus", () => {
@@ -71,9 +73,29 @@ const Home = ({ navigation }) => {
       {showEditor ? (
         <ProfileEditor onSave={onSave} />
       ) : (
-        <ScrollView style={{ height: "80%" }}>
-          <Text>Hello {currentUser.displayName} </Text>
-          <PrimaryButton onPress={() => showProfileEditor()}>Add Friend</PrimaryButton>
+        <ScrollView style={styles.container}>
+          {currentUser.displayName && (
+            <Text>Hello {currentUser.displayName} </Text>
+          )}
+          <PrimaryButton
+            style={styles.create}
+            onPress={() => showProfileEditor()}
+          >
+            Create Profile
+          </PrimaryButton>
+          {(!profiles || profiles.length === 0) && intro && (
+            <View style={styles.introProfile}>
+              <Text style={styles.introText}>
+                Create a profile for your single friend here
+              </Text>
+              <Ionicons
+                style={styles.profileArrow}
+                name="arrow-undo"
+                size={64}
+                color="blue"
+              />
+            </View>
+          )}
           {profiles?.map((profile, i) => {
             return (
               <ProfileCard
@@ -84,10 +106,64 @@ const Home = ({ navigation }) => {
               />
             );
           })}
+          {!currentUser.displayName && intro && (
+            <View style={styles.introAccount}>
+              <Text style={styles.introText}>
+                Set up your account info here!
+              </Text>
+              <Ionicons
+                style={styles.arrow}
+                name="arrow-redo"
+                size={64}
+                color="blue"
+              />
+            </View>
+          )}
         </ScrollView>
       )}
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  create: {
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+  introText: {
+    color: "blue",
+    fontWeight: "bold",
+    width: "40%",
+  },
+  introAccount: {
+    bottom: -50,
+    right: -120,
+  },
+  introProfile: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  arrow: {
+    transform: [
+      { rotateZ: "90deg" },
+      { rotateY: "45deg" },
+      { translateX: 100 },
+    ],
+  },
+  profileArrow: {
+    transform: [
+      { rotateZ: "90deg" },
+      { rotateY: "45deg" },
+      { translateY: 170 },
+      { translateX: -250 },
+    ],
+  },
+  portal: {
+    backdrop: "red",
+  },
+});
 
 export default Home;

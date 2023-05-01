@@ -26,7 +26,7 @@ const Feed = ({ navigation, onClose }) => {
       <SafeArea>
         <PrimaryButton onPress={onClose}>exit</PrimaryButton>
         <ScrollView>
-          {profiles.map((profile, i) => {
+          {profiles?.map((profile, i) => {
             return (
               <MatchCard
                 navigation={navigation}

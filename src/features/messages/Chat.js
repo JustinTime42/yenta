@@ -15,7 +15,6 @@ import { db } from "../../services/firestore";
 import { ScrollView, StyleSheet } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import { UserContext } from "../../contexts/user.context";
-import { createNewMessageThread } from "./utils";
 
 const Chat = ({ navigation, route }) => {
   const { currentUser } = useContext(UserContext);

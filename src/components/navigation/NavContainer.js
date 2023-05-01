@@ -44,7 +44,7 @@ const NavContainer = () => {
         <Tab.Screen
           name="Messages"
           component={MessagesNavigator}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, screen: "Chat List" }}
         />
         <Tab.Screen
           name="Account"

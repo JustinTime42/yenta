@@ -26,7 +26,6 @@ const ChatList = ({ navigation }) => {
           path: res.ref.path,
         });
       });
-      console.log(chatsArray);
       setChats(chatsArray);
     });
     return unsub;

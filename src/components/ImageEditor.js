@@ -21,10 +21,6 @@ const ImageEditor = ({ uploadMedia, img }) => {
   const [showCamera, setShowCamera] = useState(false);
   const [image, setImage] = useState(img);
 
-  useEffect(() => {
-    console.log(img)
-  },[img])
-
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,

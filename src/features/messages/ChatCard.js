@@ -10,20 +10,37 @@ import {
 } from "firebase/firestore";
 import { db } from "../../services/firestore";
 import { View } from "react-native";
+import { getUserDetails } from "./utils";
 
 const ChatCard = ({ chatDoc, openChat }) => {
   const [lastMsg, setLastMsg] = useState("");
+  const [lastPhoto, setLastPhoto] = useState("");
 
   useEffect(() => {
-    const chatRef = collection(db, `${chatDoc.path}/messages`);
-    const q = query(chatRef, orderBy("timestamp", "desc"), limit(1));
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        setLastMsg({ ...doc.data(), id: doc.id });
+    if (chatDoc) {
+      const chatRef = collection(db, `${chatDoc.path}/messages`);
+      const q = query(chatRef, orderBy("timestamp", "desc"), limit(1));
+      const unsub = onSnapshot(q, (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          setLastMsg({ ...doc.data(), id: doc.id });
+        });
       });
-    });
-    return unsub;
-  });
+      return unsub;
+    } else {
+      return;
+    }
+  }, [chatDoc]);
+
+  useEffect(() => {
+    if (lastMsg) {
+      getCardPhoto(lastMsg.from);
+    }
+  }, [lastMsg]);
+
+  const getCardPhoto = async (id) => {
+    const details = await getUserDetails(id);
+    setLastPhoto(details.photoURL);
+  };
 
   return (
     <TouchableOpacity
@@ -32,7 +49,13 @@ const ChatCard = ({ chatDoc, openChat }) => {
     >
       {lastMsg && (
         <>
-          <Avatar.Image source={{ uri: chatDoc[lastMsg.from].photoURL }} />
+          <Avatar.Image
+            source={
+              lastPhoto
+                ? { uri: lastPhoto }
+                : require("../../../assets/favicon.png")
+            }
+          />
           <Text>{lastMsg.body}</Text>
         </>
       )}

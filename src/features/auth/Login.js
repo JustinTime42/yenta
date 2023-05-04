@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { handleLogin, handleSignup } from "../../services/auth";
-import { Card, TextInput, Button, Snackbar } from "react-native-paper";
+import {
+  Card,
+  TextInput,
+  Button,
+  Snackbar,
+  HelperText,
+} from "react-native-paper";
 import { SafeArea } from "../../components/utility/SafeArea";
 import { PrimaryButton, SecondaryButton } from "../../components/buttons";
 import styled from "styled-components";
@@ -34,7 +40,7 @@ const Login = () => {
 
   const signUpUser = async () => {
     if (password === password2) {
-      const credential = await handleSignup(email, password);
+      const credential = await handleSignup(email.trim(), password);
       console.log(credential);
       updateUser({ uid: credential.user.uid });
       //await setDoc(doc(db, "users", credential.user.uid), {});
@@ -44,7 +50,7 @@ const Login = () => {
   };
 
   const logInUser = () => {
-    handleLogin(email, password)
+    handleLogin(email.trim(), password)
       .then((user) => {
         return;
       })
@@ -52,6 +58,8 @@ const Login = () => {
         setLoginError(error);
       });
   };
+
+  const isPasswordValid = password.length < 9 ? false : true;
 
   return (
     <SafeArea>
@@ -63,6 +71,9 @@ const Login = () => {
           secureTextEntry
           placeholder="password"
         />
+        <HelperText type="error" visible={!isPasswordValid && isNewUser}>
+          Password must be at least 9 characters
+        </HelperText>
         {isNewUser && (
           <>
             <TextInput

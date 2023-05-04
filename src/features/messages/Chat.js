@@ -11,34 +11,50 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
+import KeyboardAvoidingView from "../../components/KeyboardAvoidingView";
 import { db } from "../../services/firestore";
 import { ScrollView, StyleSheet } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import { UserContext } from "../../contexts/user.context";
+import { getMembers } from "./utils";
 
 const Chat = ({ navigation, route }) => {
   const { currentUser } = useContext(UserContext);
   const [messages, setMessages] = useState([]);
+  const [memberDetails, setMemberDetails] = useState([]);
   const { chatDoc } = route.params;
   const [text, setText] = useState("");
 
   useEffect(() => {
-    if (!chatDoc) {
-      return;
-    }
+    console.log("CHATDOC: ", chatDoc.id);
+    getMembers(chatDoc.id).then((res) => {
+      setMemberDetails(res);
+    });
+  }, [chatDoc]);
+
+  useEffect(() => {
     let chatRef;
     chatRef = collection(db, `${chatDoc.path}/messages`);
     const q = query(chatRef, orderBy("timestamp"), limit(10));
     const unsub = onSnapshot(q, (querySnapshot) => {
       let msgArray = [];
-      querySnapshot.forEach((doc) => {
-        msgArray.push({ ...doc.data(), id: doc.id });
+      querySnapshot.forEach((res) => {
+        const msg = res.data();
+        const photoURL = memberDetails?.find(
+          (i) => i.uid === msg.from
+        )?.photoURL;
+        msgArray.push({ ...res.data(), id: res.id, photoURL: photoURL });
       });
       setMessages(msgArray);
-      console.log(msgArray);
     });
     return unsub;
-  }, [chatDoc]);
+  }, [chatDoc.path, memberDetails]);
+
+  // need to get members, then for each member, get their details.
+  // then we need to access those based on msg.from
+  // useEffect(() => {
+  //   console.log("MEMBER DETALS: ", memberDetails);
+  // }, [memberDetails]);
 
   const handleSendMessage = async () => {
     const newMessageRef = await addDoc(
@@ -53,44 +69,56 @@ const Chat = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.chatWindow}>
-      <ScrollView>
-        {messages.map((msg, i) => {
-          return (
-            <TouchableOpacity key={i} styles={styles.msgContainer}>
-              <Avatar.Image source={{ uri: chatDoc[msg.from]?.photoURL }} />
-              <Text>{msg.body}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-      <View style={styles.messageBox}>
-        <TextInput
-          style={styles.sendText}
-          value={text}
-          onChangeText={(t) => setText(t)}
-        />
-        <PrimaryButton style={styles.sendButton} onPress={handleSendMessage}>
-          <Ionicons name="send" size={32} />
-        </PrimaryButton>
+    <KeyboardAvoidingView style={styles.container}>
+      <View style={styles.chatWindow}>
+        <ScrollView>
+          {messages.map((msg, i) => {
+            return (
+              <TouchableOpacity style={styles.msgContainer} key={i}>
+                <Avatar.Image
+                  source={{
+                    uri: msg.photoURL,
+                  }}
+                />
+                <Text>{msg.body}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        <View style={styles.messageBox}>
+          <TextInput
+            style={styles.sendText}
+            value={text}
+            onChangeText={(t) => setText(t)}
+          />
+          <PrimaryButton style={styles.sendButton} onPress={handleSendMessage}>
+            <Ionicons name="send" size={32} />
+          </PrimaryButton>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   msgContainer: {
     display: "flex",
     flexDirection: "row",
+    margin: 1,
+    alignItems: "center",
   },
   chatWindow: {
     display: "flex",
-    height: "100%",
+    flex: 1,
+    justifyContent: "flex-end",
   },
   messageBox: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
   },
   sendText: {
     flexBasis: "80%",

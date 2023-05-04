@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import { auth } from "../../services/auth";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Button, Snackbar, TextInput, Avatar } from "react-native-paper";
 import { Camera, CameraType } from "expo-camera";
@@ -10,16 +11,20 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { PrimaryButton, SecondaryButton } from "../../components/buttons";
 import { useTheme } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
-import ProfilePhoto from "./UserPhoto";
+import UserPhoto from "./UserPhoto";
 import CameraScreen from "../../components/camera/CameraScreen";
 import { LoadingContext } from "../../contexts/loading.context";
 import { uploadProfilePhoto } from "../../services/storage";
+import ImageEditor from "../../components/ImageEditor";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../services/firestore";
 // import CameraScreen from "./CameraScreen";
 
 const Account = ({ navigation }) => {
   const { currentUser } = useContext(UserContext);
   const { setIsLoading } = useContext(LoadingContext);
-  const [displayName, setDisplayName] = useState(currentUser.displayName);
+  const [displayName, setDisplayName] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
   const [isEditting, setIsEditting] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   //const [photoURL, setPhotoURL] = useState(currentUser.photoURL);
@@ -34,18 +39,14 @@ const Account = ({ navigation }) => {
     margin-bottom: 5px;
   `;
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     setIsEditting(false);
-  //     return () => {
-  //       setIsEditting(false);
-  //     };
-  //   }, [])
-  // );
-
   useEffect(() => {
-    console.log("photoURL: ", currentUser.photoURL);
-  }, [currentUser.photoURL, currentUser.displayName]);
+    const unsub = onSnapshot(doc(db, "users", currentUser.uid), (res) => {
+      const data = res.data();
+      setPhotoURL(data.photoURL);
+      setDisplayName(data.displayName);
+    });
+    return unsub;
+  }, [currentUser]);
 
   const updateProfile = () => {
     const userDetails = {
@@ -53,13 +54,14 @@ const Account = ({ navigation }) => {
     };
     handleUpdateProfile(userDetails)
       .then((res) => {
+        auth.getInstance().getCurrentUser().reload();
         setSnackText(res);
         setIsEditting(false);
       })
       .catch((err) => setSnackText(err));
   };
 
-  const uploadMedia = (image) => {
+  const onSaveImage = (image) => {
     setIsLoading(true);
     uploadProfilePhoto(currentUser, image).then((res) => {
       setIsLoading(false);
@@ -72,10 +74,6 @@ const Account = ({ navigation }) => {
     align-items: flex-end;
   `;
 
-  const openCamera = () => {
-    setShowCamera(true);
-  };
-
   return (
     <View>
       <PrimaryButton onPress={handleSignOut}>Log out</PrimaryButton>
@@ -83,11 +81,9 @@ const Account = ({ navigation }) => {
         {isEditting ? "Cancel" : "Edit"}
       </Button>
       {isEditting ? (
-        <TouchableOpacity onPress={openCamera}>
-          <CameraButton size={128} icon="camera" />
-        </TouchableOpacity>
+        <ImageEditor uploadMedia={onSaveImage} />
       ) : (
-        <ProfilePhoto src={currentUser.photoURL} />
+        <UserPhoto src={photoURL} />
       )}
       {isEditting ? (
         <>
@@ -106,7 +102,6 @@ const Account = ({ navigation }) => {
       <Snackbar visible={snackText} onDismiss={() => setSnackText("")}>
         {snackText}
       </Snackbar>
-      {showCamera && <CameraScreen uploadMedia={uploadMedia} onClose={() => setShowCamera(false)} />}
     </View>
   );
 };

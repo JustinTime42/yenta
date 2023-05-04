@@ -2,7 +2,7 @@
   "expo": {
     "name": "Match Me Up",
     "slug": "yenta",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

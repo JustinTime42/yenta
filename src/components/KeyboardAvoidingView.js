@@ -61,7 +61,7 @@ const KeyboardShift = (props) => {
   if (Platform.OS === "android") {
     return (
       <Animated.View
-        style={[styles.container, { transform: [{ translateY: shift }] }]}
+        style={[{ ...styles.container, transform: [{ translateY: shift }] }]}
       >
         {children}
       </Animated.View>
@@ -70,21 +70,18 @@ const KeyboardShift = (props) => {
 
   // iOS: React Native's KeyboardAvoidingView with header offset and
   // behavior 'padding' works fine on all ios devices (and keyboard types)
-  
+
   return (
-    <KeyboardAvoidingView
-      keyboardVerticalOffset={headerHeight}
-      style={styles.container}
-      behavior={"padding"}
-    >
-      {props.children}
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      {children}
     </KeyboardAvoidingView>
   );
 };
 
-export default KeyboardAvoidingView;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
+
+export default KeyboardShift;

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Match Me Up",
+    "name": "SetThemUp",
     "slug": "yenta",
-    "version": "1.0.5",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,12 +11,27 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.justintime42.yenta"
+      "bundleIdentifier": "com.justintime42.yenta",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to take photos and videos.",
+        "NSMicrophoneUsageDescription": "This app uses the microphone when recording videos.",
+        "NSPhotoLibraryUsageDescription": "This app uses your photo library to upload photos or videos."
+      }
     },
     "android": {
       "adaptiveIcon": {

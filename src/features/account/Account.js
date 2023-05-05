@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../services/auth";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, Snackbar, TextInput, Avatar } from "react-native-paper";
 import { Camera, CameraType } from "expo-camera";
 import { UserContext } from "../../contexts/user.context";
@@ -18,6 +18,8 @@ import { uploadProfilePhoto } from "../../services/storage";
 import ImageEditor from "../../components/ImageEditor";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../services/firestore";
+import KeyboardShift from "../../components/KeyboardAvoidingView";
+import { ScrollView } from "react-native-gesture-handler";
 // import CameraScreen from "./CameraScreen";
 
 const Account = ({ navigation }) => {
@@ -40,9 +42,14 @@ const Account = ({ navigation }) => {
   `;
 
   useEffect(() => {
+    console.log("Display Name: ", displayName);
+  }, [displayName]);
+
+  useEffect(() => {
     const unsub = onSnapshot(doc(db, "users", currentUser.uid), (res) => {
       const data = res.data();
       setPhotoURL(data.photoURL);
+
       setDisplayName(data.displayName);
     });
     return unsub;
@@ -54,7 +61,8 @@ const Account = ({ navigation }) => {
     };
     handleUpdateProfile(userDetails)
       .then((res) => {
-        auth.getInstance().getCurrentUser().reload();
+        console.log("RES: ", res);
+        //auth.getInstance().getCurrentUser().reload();
         setSnackText(res);
         setIsEditting(false);
       })
@@ -75,35 +83,56 @@ const Account = ({ navigation }) => {
   `;
 
   return (
-    <View>
-      <PrimaryButton onPress={handleSignOut}>Log out</PrimaryButton>
-      <Button onPress={() => setIsEditting((a) => !a)}>
-        {isEditting ? "Cancel" : "Edit"}
-      </Button>
-      {isEditting ? (
-        <ImageEditor uploadMedia={onSaveImage} />
-      ) : (
-        <UserPhoto src={photoURL} />
-      )}
-      {isEditting ? (
-        <>
-          <TextInput
-            value={displayName}
-            onChangeText={setDisplayName}
-            placeholder="Display Name"
-          />
-          <SecondaryButton onPress={updateProfile}>
-            Save Changes
-          </SecondaryButton>
-        </>
-      ) : (
-        <Text>Hi {currentUser.displayName}</Text>
-      )}
-      <Snackbar visible={snackText} onDismiss={() => setSnackText("")}>
-        {snackText}
-      </Snackbar>
-    </View>
+    <KeyboardShift>
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <PrimaryButton onPress={handleSignOut}>Log out</PrimaryButton>
+        <Button onPress={() => setIsEditting((a) => !a)}>
+          {isEditting ? "Done Editting" : "Edit"}
+        </Button>
+        {isEditting ? (
+          <ImageEditor uploadMedia={onSaveImage} />
+        ) : (
+          <UserPhoto src={photoURL} />
+        )}
+        {isEditting ? (
+          <View style={styles.nameEditor}>
+            <TextInput
+              style={styles.nameInput}
+              value={displayName}
+              onChangeText={setDisplayName}
+              placeholder="Display Name"
+            />
+            <SecondaryButton onPress={updateProfile}>
+              Save Changes
+            </SecondaryButton>
+          </View>
+        ) : (
+          <Text>Hi {currentUser?.displayName}</Text>
+        )}
+        <Snackbar
+          visible={snackText}
+          onDismiss={() => setSnackText("")}
+          action={{
+            label: "Ok",
+            onPress: () => setSnackText(""),
+          }}
+        >
+          {snackText}
+        </Snackbar>
+      </ScrollView>
+    </KeyboardShift>
   );
 };
+const styles = StyleSheet.create({
+  nameEditor: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+  nameInput: {
+    flexBasis: "60%",
+  },
+});
 
 export default Account;

@@ -11,12 +11,12 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import KeyboardAvoidingView from "../../components/KeyboardAvoidingView";
 import { db } from "../../services/firestore";
 import { ScrollView, StyleSheet } from "react-native";
 import { PrimaryButton } from "../../components/buttons";
 import { UserContext } from "../../contexts/user.context";
 import { getMembers } from "./utils";
+import KeyboardShift from "../../components/KeyboardAvoidingView";
 
 const Chat = ({ navigation, route }) => {
   const { currentUser } = useContext(UserContext);
@@ -69,7 +69,7 @@ const Chat = ({ navigation, route }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardShift>
       <View style={styles.chatWindow}>
         <ScrollView>
           {messages.map((msg, i) => {
@@ -91,12 +91,16 @@ const Chat = ({ navigation, route }) => {
             value={text}
             onChangeText={(t) => setText(t)}
           />
-          <PrimaryButton style={styles.sendButton} onPress={handleSendMessage}>
-            <Ionicons name="send" size={32} />
-          </PrimaryButton>
+          <Ionicons
+            color="blue"
+            style={styles.sendButton}
+            onPress={handleSendMessage}
+            name="send"
+            size={32}
+          />
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardShift>
   );
 };
 
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-evenly",
   },
   sendText: {
     flexBasis: "80%",

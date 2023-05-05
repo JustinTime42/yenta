@@ -74,8 +74,10 @@ const Home = ({ navigation }) => {
         <ProfileEditor onSave={onSave} />
       ) : (
         <ScrollView style={styles.container}>
-          {currentUser.displayName && (
-            <Text>Hello {currentUser.displayName} </Text>
+          {(!profiles || profiles.length === 0) && intro && (
+            <Text style={styles.introText}>
+              Tap "Create Profile" below to make a profile for your single friend.
+            </Text>
           )}
           <PrimaryButton
             style={styles.create}
@@ -83,19 +85,6 @@ const Home = ({ navigation }) => {
           >
             Create Profile
           </PrimaryButton>
-          {(!profiles || profiles.length === 0) && intro && (
-            <View style={styles.introProfile}>
-              <Text style={styles.introText}>
-                Create a profile for your single friend here
-              </Text>
-              <Ionicons
-                style={styles.profileArrow}
-                name="arrow-undo"
-                size={64}
-                color="blue"
-              />
-            </View>
-          )}
           {profiles?.map((profile, i) => {
             return (
               <ProfileCard
@@ -106,19 +95,6 @@ const Home = ({ navigation }) => {
               />
             );
           })}
-          {!currentUser.displayName && intro && (
-            <View style={styles.introAccount}>
-              <Text style={styles.introText}>
-                Set up your account info here!
-              </Text>
-              <Ionicons
-                style={styles.arrow}
-                name="arrow-redo"
-                size={64}
-                color="blue"
-              />
-            </View>
-          )}
         </ScrollView>
       )}
     </>
@@ -136,7 +112,9 @@ const styles = StyleSheet.create({
   introText: {
     color: "blue",
     fontWeight: "bold",
-    width: "40%",
+    width: "80%",
+    marginRight: "auto", 
+    marginLeft: "auto",
   },
   introAccount: {
     bottom: -50,

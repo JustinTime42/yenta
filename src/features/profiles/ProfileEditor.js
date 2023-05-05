@@ -32,11 +32,15 @@ const ProfileEditor = () => {
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "profiles", currentProfile), (res) => {
+      console.log("RES", res.data());
       setProfileDetails({ ...res.data(), id: res.id });
     });
     return unsub;
   }, [currentProfile]);
 
+  useEffect(() => {
+    console.log(profileDetails);
+  }, [profileDetails]);
   //move the save functionality from profilepic and video here
   // I'm making the profile thing a one page deal for now.
   //might make a second page for the likes/dislikes but not sure
@@ -51,7 +55,7 @@ const ProfileEditor = () => {
 
   const onSave = (details, next) => {
     console.log(details);
-    updateProfile({ firstName: name, id: currentProfile });
+    updateProfile({ ...profileDetails });
   };
 
   const onStartCamera = () => {
@@ -63,15 +67,21 @@ const ProfileEditor = () => {
     setShowDelete(false);
   };
 
+  const setFirstName = (value) => {
+    console.log("EVENT: ", value);
+    setProfileDetails((details) => {
+      return { ...details, firstName: value };
+    });
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={styles.container}>
       {/* change this. make a Text visible if not editing, TextInput if editting */}
       <View style={styles.nameContainer}>
         <TextInput
           style={styles.nameField}
-          value={name}
-          onChangeText={setName}
-          placeholder={profileDetails.firstName || "First Name"}
+          value={profileDetails.firstName}
+          onChangeText={setFirstName}
         />
         <PrimaryButton style={styles.saveButton} onPress={onSave}>
           Save
